@@ -68,10 +68,10 @@
   "verify license signature and returns license data"
   (try
     (let [lines (str/split-lines license-text)
-          ^String header (first lines)
-          ^String license (second lines)
-          ^String signature (second (rest lines))
-          ^String footer (last lines)]
+          ^String header (get lines 0)
+          ^String license (get lines 1)
+          ^String signature (get lines 2)
+          ^String footer (get lines 3)]
       (assert (= header license-header))
       (assert (= footer license-footer))
       (assert (verify-license license signature))

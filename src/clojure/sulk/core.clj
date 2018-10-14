@@ -69,10 +69,19 @@
         lic-text (slk/generate-license-text license-data)]
     (slk/write-license-file! lic-text (:output-file options))))
 
+(defn verify-license [options]
+  (slk/read-public-key (:key-file options))
+  (let [verification (slk/read-license-file (:input-file options))]
+    (if (:error verification)
+        (exit -2 (str "License could not be verified: " (:error verification)))
+        (do
+          (println verification)
+          (exit 1 "License is valid")))))
+
 (defn -main [& args]
   (let [{:keys [action options exit-message ok?]} (validate-args args)]
     (if exit-message
       (exit (if ok? 0 1) exit-message)
       (case action
         "generate" (generate-license options)
-        "verify"   (print options)))))
+        "verify"   (verify-license options)))))
