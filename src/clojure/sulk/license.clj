@@ -19,6 +19,7 @@
 
 (def bad-license-resp {:error "Invalid license"})
 (def file-error-resp {:error "Could not read license file"})
+(def license-parse-error {:error "Could not read license"})
 ;; Normally, you will either read the private key or the public key
 ;; But seldom would you need to do both outside of unit tests
 (defn read-private-key [^String filename]
@@ -52,11 +53,15 @@
 
 (defn decode-license [^String license-string]
   "Decodes the license b64 string back to a clojure Map"
-  (let [ba (.decode (Base64/getDecoder) license-string)
-        js (apply str (map char ba))
-        lm (cheshire/decode js)]
-    ;; make the string keys back into clj keywords again
-    (cw/keywordize-keys lm)))
+  (try
+    (let [ba (.decode (Base64/getDecoder) license-string)
+          js (apply str (map char ba))
+          lm (cheshire/decode js)]
+      ;; make the string keys back into clj keywords again
+      (cw/keywordize-keys lm))
+    (catch Exception e
+      (timbre/warn "Could not decode license text" e)
+      license-parse-error)))
 
 (defn generate-license-text [^IPersistentMap license-data]
   "Generates the license file text"
