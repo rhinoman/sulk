@@ -64,6 +64,11 @@
         sig (sign-license ld-b64)]
     (str license-header "\n" ld-b64 "\n" sig "\n" license-footer)))
 
+(defn extract-license-text [^String license-text]
+  (let [lines (str/split-lines license-text)]
+    {:license (get lines 1)
+     :signature (get lines 2)}))
+
 (defn read-license-text [^String license-text]
   "verify license signature and returns license data"
   (try
