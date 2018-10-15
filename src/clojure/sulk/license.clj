@@ -84,6 +84,9 @@
       (decode-license license))
     (catch AssertionError ae
       (timbre/warn "Invalid License!" ae)
+      bad-license-resp)
+    (catch Exception e
+      (timbre/warn "Couldn't parse license!" e)
       bad-license-resp)))
 
 ;; Read license file
