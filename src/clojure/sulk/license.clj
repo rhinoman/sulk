@@ -22,7 +22,9 @@
 (def license-parse-error {:error "Could not read license"})
 ;; Normally, you will either read the private key or the public key
 ;; But seldom would you need to do both outside of unit tests
-(defn read-private-key [^String filename]
+
+
+(defn read-private-key [filename]
   "reads the private key into the key manager"
   (try
     (.readPrivateKey km filename)
@@ -30,7 +32,7 @@
       (timbre/error e)
       (System/exit -1))))
 
-(defn read-public-key [^String filename]
+(defn read-public-key [filename]
   "reads the public key into the key manager"
   (try
     (.readPublicKey km filename)

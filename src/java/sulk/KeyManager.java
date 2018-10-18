@@ -1,7 +1,12 @@
 package sulk;
 
-import java.io.IOException;
+import org.apache.commons.io.IOUtils;
+
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -75,15 +80,13 @@ public class KeyManager {
     }
 
     /**
-     * Reads Private key from file
-     * @param filename the file containing the private key
+     * Parses private key from byte array
+     * @param keyBytes the key bytes
      * @throws NoSuchAlgorithmException
-     * @throws IOException
      * @throws InvalidKeySpecException
      */
-    public void readPrivateKey(String filename)
-            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
+    public void readPrivateKey (byte[] keyBytes)
+            throws NoSuchAlgorithmException, InvalidKeySpecException{
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
@@ -91,22 +94,112 @@ public class KeyManager {
     }
 
     /**
-     * Reads public key from file
-     * @param filename the file containing the public key
+     * Parses public key from byte array
+     * @param keyBytes the key bytes
      * @throws NoSuchAlgorithmException
-     * @throws IOException
      * @throws InvalidKeySpecException
      */
-    public void readPublicKey(String filename)
-            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
+    public void readPublicKey (byte[] keyBytes)
+            throws NoSuchAlgorithmException, InvalidKeySpecException{
 
         X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         this.publicKey = kf.generatePublic(spec);
     }
 
+    /**
+     * Reads Private key from file
+     * @param path the path containing the private key
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
+     */
+    public void readPrivateKey(Path path)
+            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        readPrivateKey(Files.readAllBytes(path));
+    }
 
+    /**
+     * Reads public key from file
+     * @param path the path containing the public key
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
+     */
+    public void readPublicKey(Path path)
+            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        readPublicKey(Files.readAllBytes(path));
+    }
 
+    /**
+     * Reads public key from file
+     * @param filename the filename
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
+     */
+    public void readPublicKey(String filename)
+            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        readPublicKey(Paths.get(filename));
+    }
 
+    /**
+     * Reads private key from file
+     * @param filename the filename
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
+     */
+    public void readPrivateKey(String filename)
+            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        readPrivateKey(Paths.get(filename));
+
+    }
+
+    /**
+     * Reads public key from url path
+     * @param url the location of the public key
+     */
+    public void readPublicKey(URL url)
+            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, URISyntaxException {
+        readPublicKey(Paths.get(url.toURI()));
+    }
+
+    /**
+     * Reads private key from url path
+     * @param url the location of the private key
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
+     */
+    public void readPrivtaeKey(URL url)
+            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, URISyntaxException {
+        readPrivateKey(Paths.get(url.toURI()));
+    }
+
+    /**
+     * Reads public key from inputstream
+     * @param is the input stream
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
+     * @throws URISyntaxException
+     */
+    public void readPublicKey(InputStream is)
+            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, URISyntaxException {
+        readPublicKey(IOUtils.toByteArray(is));
+    }
+
+    /**
+     * Reads private key from input stream
+     * @param is the input stream
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
+     * @throws URISyntaxException
+     */
+    public void readPrivateKey(InputStream is)
+            throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, URISyntaxException {
+        readPrivateKey(IOUtils.toByteArray(is));
+    }
 }

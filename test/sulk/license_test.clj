@@ -1,6 +1,7 @@
 (ns sulk.license-test
   (:require [clojure.test :refer :all]
-            [sulk.license :as slk]))
+            [sulk.license :as slk]
+            [clojure.java.io :as io]))
 
 (def test-license-1 {:customer-name "Acme Corp."
                      :software "fizzbuzzer"
@@ -16,8 +17,8 @@
 
 (deftest test-license-handling
   (testing "Test key loading"
-    (slk/read-private-key "resources/TEST_private_key.der")
-    (slk/read-public-key "resources/TEST_public_key.der"))
+    (slk/read-private-key (io/input-stream "resources/TEST_private_key.der"))
+    (slk/read-public-key (io/resource "TEST_public_key.der")))
   (testing "Test generate license signature"
     (let [lic-enc (slk/encode-license test-license-1)
           lic-dec (slk/decode-license lic-enc)

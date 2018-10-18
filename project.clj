@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [cheshire "5.8.1"]
                  [com.taoensso/timbre "4.10.0"]
-                 [org.clojure/tools.cli "0.4.1"]]
+                 [org.clojure/tools.cli "0.4.1"]
+                 [commons-io "2.6"]]
   :main ^:skip-aot sulk.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
