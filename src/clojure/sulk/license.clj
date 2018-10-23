@@ -46,7 +46,11 @@
 
 (defn verify-license [^String license ^String signature]
   "Given a license and signature, verifies"
-  (.verify km license signature))
+  (try
+    (.verify km license signature)
+    (catch Exception e
+      (timbre/warn "Could not verify license: " e)
+      false)))
 
 (defn encode-license [^IPersistentMap license-data]
   "Encodes the license Map to Base64-encoded json"
